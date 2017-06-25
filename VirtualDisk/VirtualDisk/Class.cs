@@ -33,7 +33,7 @@ namespace VirtualDisk
         public short endOfSector = new short();
         public MasterBootRecord()
         {
-
+            //constructor
         }
         public void DatosMBR()
         {
@@ -92,7 +92,7 @@ namespace VirtualDisk
 
         public DecodedMBR()
         {
-
+            //Constructor
         }
 
 
@@ -108,7 +108,7 @@ namespace VirtualDisk
         }
         public void FreeCluster()
         {
-            inputFAT = 0;
+            inputFAT = new ushort();
         }
         public void BusyCluster(Nullable<ushort> nextCluster) 
         {
@@ -118,17 +118,17 @@ namespace VirtualDisk
             }
             else
             {
-                inputFAT = 65535;
+                inputFAT = 1;
             }
         }
 
         public void ReservedCluster()
         {
-            inputFAT = 65526;
+            inputFAT = 2;
         }
         public void BadCluster()
         {
-            inputFAT = 65527;
+            inputFAT = 3;
         }
     }
 
@@ -136,55 +136,150 @@ namespace VirtualDisk
     [Serializable]
     public class rootDir
     {
-        public long filename { get; set; }
+        public rootDir father { get; set; }
+        public byte[] filename { get; set; }
         public byte[] filenameExt { get; set; } //3
         public byte fileAttributes { get; set; }
         public byte NT { get; set; }
         public byte millisegundos_Creado { get; set; }
-        public byte[] horaC { get; set; }
-        public byte[] fechaC { get; set; }
-        public byte[] fechaLastaccess { get; set; }
+        public ushort horaC { get; set; }
+        public ushort fechaC { get; set; }
+        public ushort fechaLastaccess { get; set; }
         public ushort reservedFAT32 { get; set; }
-        public byte[] horaLastwrite { get; set; }
-        public byte[] fechaLastwrite { get; set; }
+        public ushort horaLastwrite { get; set; }
+        public ushort fechaLastwrite { get; set; }
         public ushort startingCluster { get; set; }
         public uint fileSize { get; set; }
-
+        public long byteP { get; set; }
+        public List<ushort> subDir { get; set; }
         public rootDir()
         {
-            filename = new long();
+            filename = new byte [8];
             filenameExt = new byte[3];
             fileAttributes = new byte();
             NT = new byte();
             millisegundos_Creado = new byte();
-            horaC = new byte[2];
-            fechaC = new byte[2];
-            fechaLastaccess = new byte[2];
+            horaC = new ushort();
+            fechaC = new ushort();
+            fechaLastaccess = new ushort();
             reservedFAT32 = new ushort();
-            horaLastwrite = new byte[2];
-            fechaLastwrite = new byte[2];
+            horaLastwrite = new ushort();
+            fechaLastwrite = new ushort();
             startingCluster = new ushort();
             fileSize = new uint();
+            subDir = new List<ushort>();
         }
 
-        public void newFile(string FileName, char atributo, DateTime creado, ushort clusterInicio, uint tamanio)
+        public void newFile(string FileName, char atributo, DateTime creado, ushort clusterInicio, uint size)
         {
             string[] FileAndExtension = FileName.Split('.');
-            filename = BitConverter.ToInt64(Encoding.ASCII.GetBytes(FileAndExtension[0]), 0);
-            filenameExt = Encoding.ASCII.GetBytes(FileAndExtension[1]);
+            byte[] temp = Encoding.ASCII.GetBytes(FileAndExtension[0]);
+            Array.Resize<byte>(ref temp, 8);
+            filename = temp;
+            temp = Encoding.ASCII.GetBytes(FileAndExtension[1]);
+            Array.Resize<byte>(ref temp, 3);
+            filenameExt = temp;
             fileAttributes = Convert.ToByte(atributo);
             NT = 0;
-            millisegundos_Creado = Convert.ToByte(creado.Millisecond);
-            horaC = Encoding.ASCII.GetBytes(creado.ToShortTimeString());
-            fechaC = Encoding.ASCII.GetBytes(creado.ToShortDateString());
-            fechaLastaccess = Encoding.ASCII.GetBytes(creado.ToShortDateString());
+            millisegundos_Creado = Convert.ToByte(creado.Millisecond / 10);
+
+            horaC = setHorasC(creado);
+            fechaC = setDiasC(creado);
+            fechaLastaccess = setDiasC(creado);
             reservedFAT32 = 0;
-            horaLastwrite = Encoding.ASCII.GetBytes(creado.ToShortTimeString());
-            fechaLastwrite = Encoding.ASCII.GetBytes(creado.ToShortDateString());
+            horaLastwrite = setHorasC(creado);
+            fechaLastwrite = setDiasC(creado);
+            //startingCluster = 0;
             startingCluster = clusterInicio;
-            fileSize = tamanio;
+            //fileSize = 0;
+            fileSize = size;
+            subDir = new List<ushort>();
         }
-        public void newFolder(string FileName, DateTime creado)
+
+        /* public void newFolder(rootDir Father, string nombreCarpeta, DateTime creado)
+         {
+             father = Father;
+             byte[] temp = Encoding.ASCII.GetBytes(nombreCarpeta);
+             Array.Resize<byte>(ref temp, 8);
+             filename = temp;
+             filenameExt = new byte[3];
+             fileAttributes = Convert.ToByte('D');
+             NT = 0;
+             millisegundos_Creado = Convert.ToByte(creado.Millisecond / 10);
+             horaC = setHorasC(creado);
+             fechaC = setDiasC(creado);
+             fechaLastaccess = setDiasC(creado);
+             reservedFAT32 = 0;
+             horaLastwrite = setHorasC(creado);
+             fechaLastwrite = setDiasC(creado);
+             startingCluster = 0;
+             fileSize = 0;
+
+             subDir = new List<ushort>();
+         }*/
+
+        public void newFolder(string folderName, DateTime creado)
+        {
+            byte[] temp = Encoding.ASCII.GetBytes(folderName);
+            Array.Resize<byte>(ref temp, 8);
+            filename = temp;
+            filenameExt = new byte[3];
+            fileAttributes = Convert.ToByte('D');
+            NT = 0;
+            millisegundos_Creado = Convert.ToByte(creado.Millisecond / 10);
+            horaC = setHorasC(creado);
+            fechaC = setDiasC(creado);
+            fechaLastaccess = setDiasC(creado);
+            reservedFAT32 = 0;
+            horaLastwrite = setHorasC(creado);
+            fechaLastwrite = setDiasC(creado);
+            startingCluster = 0;
+            fileSize = 0;
+            subDir = new List<ushort>();
+        }
+
+
+        public void changeFolderName(string folderName)
+        {
+            byte[] temp = Encoding.ASCII.GetBytes(folderName);
+            Array.Resize<byte>(ref temp, 8);
+            filename = temp;
+        }
+
+        public void setclusterSubDir(ushort nCluster)
+        {
+            startingCluster = nCluster;
+        }
+
+        public ushort setDiasC(DateTime fecha)
+        {
+            DateTime fechabase = DateTime.Parse("28/04/2017");
+            ushort result = (ushort)(fecha - fechabase).TotalDays;
+            return result;
+        }
+
+        public ushort setHorasC(DateTime fecha)
+        {
+            DateTime fechabase = DateTime.Parse("00:00AM");
+            TimeSpan TSpan = fecha.Subtract(fechabase);
+            return (ushort)TSpan.TotalMinutes; ;
+        }
+
+        public DateTime getFechaC(ushort valor)
+        {
+            DateTime fechabase = DateTime.Parse("28/04/2017");
+            DateTime fecha = fechabase.AddDays(valor);
+            return fecha;
+        }
+
+        public DateTime getHoraC(ushort valor)
+        {
+            DateTime fechabase = DateTime.Parse("00:00AM");
+            DateTime fecha = fechabase.AddMinutes(valor);
+            return fecha;
+        }
+
+       /* public void newFolder(string FileName, DateTime creado)
         {
             filename = BitConverter.ToInt64(Encoding.ASCII.GetBytes(FileName), 0);
             filenameExt = new byte[3];
@@ -199,11 +294,11 @@ namespace VirtualDisk
             fechaLastwrite = Encoding.ASCII.GetBytes(creado.ToShortDateString());
             startingCluster = 0;
             fileSize = 0;
-        }
+        }*/
 
-        public void setclusterSubdirectorio(ushort nCluster)
+        /*public void setclusterSubdirectorio(ushort nCluster)
         {
             startingCluster = nCluster;
-        }
+        }*/
     }
 }
