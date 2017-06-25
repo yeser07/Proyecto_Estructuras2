@@ -45,6 +45,7 @@ namespace VirtualDisk
             this.CrearDiscoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AbrirDiscoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExploradorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.formatiarDiscoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +64,8 @@ namespace VirtualDisk
             // 
             this.ArchivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CrearDiscoToolStripMenuItem,
-            this.AbrirDiscoToolStripMenuItem});
+            this.AbrirDiscoToolStripMenuItem,
+            this.formatiarDiscoToolStripMenuItem});
             this.ArchivoToolStripMenuItem.Name = "ArchivoToolStripMenuItem";
             this.ArchivoToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             this.ArchivoToolStripMenuItem.Text = "Archivo";
@@ -71,14 +73,14 @@ namespace VirtualDisk
             // CrearDiscoToolStripMenuItem
             // 
             this.CrearDiscoToolStripMenuItem.Name = "CrearDiscoToolStripMenuItem";
-            this.CrearDiscoToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.CrearDiscoToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.CrearDiscoToolStripMenuItem.Text = "Crear Disco";
             this.CrearDiscoToolStripMenuItem.Click += new System.EventHandler(this.CrearDiscoToolStripMenuItem_Click_1);
             // 
             // AbrirDiscoToolStripMenuItem
             // 
             this.AbrirDiscoToolStripMenuItem.Name = "AbrirDiscoToolStripMenuItem";
-            this.AbrirDiscoToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.AbrirDiscoToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.AbrirDiscoToolStripMenuItem.Text = "Abrir Disco";
             this.AbrirDiscoToolStripMenuItem.Click += new System.EventHandler(this.AbrirDiscoToolStripMenuItem_Click_1);
             // 
@@ -88,6 +90,13 @@ namespace VirtualDisk
             this.ExploradorToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
             this.ExploradorToolStripMenuItem.Text = "Explorador";
             this.ExploradorToolStripMenuItem.Click += new System.EventHandler(this.ExploradorToolStripMenuItem_Click);
+            // 
+            // formatiarDiscoToolStripMenuItem
+            // 
+            this.formatiarDiscoToolStripMenuItem.Name = "formatiarDiscoToolStripMenuItem";
+            this.formatiarDiscoToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.formatiarDiscoToolStripMenuItem.Text = "Formatear Disco";
+            this.formatiarDiscoToolStripMenuItem.Click += new System.EventHandler(this.formatiarDiscoToolStripMenuItem_Click);
             // 
             // Principal
             // 
@@ -218,11 +227,9 @@ namespace VirtualDisk
                     tablaMBR.DatosMBR();
                     using (BinaryWriter stream = new BinaryWriter(File.Open(dlgNuevoArchivo.FileName, FileMode.Open)))
                     {
-                        //Escribir master boot record
                         stream.BaseStream.Position = 0;
                         stream.Write(tablaMBR.jumpInstruction, 0, tablaMBR.jumpInstruction.Length);
                         stream.Write(tablaMBR.oemID, 0, tablaMBR.oemID.Length);
-
                         stream.Write(tablaMBR.bytesxSec);
                         stream.Write(tablaMBR.sectorxCluster);
                         stream.Write(tablaMBR.reservedSectors);
@@ -235,7 +242,6 @@ namespace VirtualDisk
                         stream.Write(tablaMBR.numberOfHeads);
                         stream.Write(tablaMBR.hiddenSectors);
                         stream.Write(tablaMBR.largeSectors);
-
                         stream.Write(tablaMBR.physicalDriveNo);
                         stream.Write(tablaMBR.reserved);
                         stream.Write(tablaMBR.extBootSignature);
@@ -343,6 +349,101 @@ namespace VirtualDisk
         private void Principal_Load_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void formatiarDiscoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dlgNuevoArchivo = new OpenFileDialog();
+            dlgNuevoArchivo.RestoreDirectory = true;
+            dlgNuevoArchivo.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+            if (dlgNuevoArchivo.ShowDialog() == DialogResult.OK)
+            {
+                if (File.Exists(dlgNuevoArchivo.FileName))
+                {
+                    FileStream fs = new FileStream(dlgNuevoArchivo.FileName, FileMode.Open,FileAccess.Write);
+                    fs.Seek(1024 * 1024 * 1024, SeekOrigin.Begin);
+                    fs.WriteByte(0);
+                    fs.Close();
+
+                    MasterBootRecord tablaMBR = new MasterBootRecord();
+                    tablaMBR.DatosMBR();
+                    using (BinaryWriter stream = new BinaryWriter(File.Open(dlgNuevoArchivo.FileName, FileMode.Open)))
+                    {
+                        stream.BaseStream.Position = 0;
+                        stream.Write(tablaMBR.jumpInstruction, 0, tablaMBR.jumpInstruction.Length);
+                        stream.Write(tablaMBR.oemID, 0, tablaMBR.oemID.Length);
+                        stream.Write(tablaMBR.bytesxSec);
+                        stream.Write(tablaMBR.sectorxCluster);
+                        stream.Write(tablaMBR.reservedSectors);
+                        stream.Write(tablaMBR.numberOfFATs);
+                        stream.Write(tablaMBR.rootEntries);
+                        stream.Write(tablaMBR.smallSectors);
+                        stream.Write(tablaMBR.mediaDescriptor);
+                        stream.Write(tablaMBR.sectorxFATs);
+                        stream.Write(tablaMBR.sectorxTrack);
+                        stream.Write(tablaMBR.numberOfHeads);
+                        stream.Write(tablaMBR.hiddenSectors);
+                        stream.Write(tablaMBR.largeSectors);
+                        stream.Write(tablaMBR.physicalDriveNo);
+                        stream.Write(tablaMBR.reserved);
+                        stream.Write(tablaMBR.extBootSignature);
+                        stream.Write(tablaMBR.serialNo);
+                        stream.Write(tablaMBR.volumeLabel);
+                        stream.Write(tablaMBR.fileSystemType);
+
+                        stream.Write(tablaMBR.bootstrapCode, 0, tablaMBR.bootstrapCode.Length);
+                        stream.Write(tablaMBR.endOfSector);
+                        FAT16[] tablaFAT = new FAT16[65536];
+
+                        for (int i = 0; i < 65536; i++)
+                        {
+                            tablaFAT[i] = new FAT16();
+                            if (i <= 16)
+                            {
+                                tablaFAT[i].ReservedCluster();
+                            }
+                            else
+                            {
+                                tablaFAT[i].FreeCluster();
+                            }
+                        }
+
+                        for (int a = 0; a < 2; a++)
+                        {
+                            foreach (FAT16 fentry in tablaFAT)
+                            {
+                                stream.Write(fentry.inputFAT);
+                            }
+                        }
+                        for (int i = 0; i < 512; i++)
+                        {
+                            rootDir directorioVacio = new rootDir();
+                            stream.Write(directorioVacio.filename);
+                            stream.Write(directorioVacio.filenameExt);
+                            stream.Write(directorioVacio.fileAttributes);
+                            stream.Write(directorioVacio.NT);
+                            stream.Write(directorioVacio.millisegundos_Creado);
+                            stream.Write(directorioVacio.horaC);
+                            stream.Write(directorioVacio.fechaC);
+                            stream.Write(directorioVacio.fechaLastaccess);
+                            stream.Write(directorioVacio.reservedFAT32);
+                            stream.Write(directorioVacio.horaLastwrite);
+                            stream.Write(directorioVacio.fechaLastwrite);
+                            stream.Write(directorioVacio.startingCluster);
+                            stream.Write(directorioVacio.fileSize);
+                        }
+                    }
+
+                    Principal.Default = Path.GetFullPath(dlgNuevoArchivo.FileName);
+
+                    MessageBox.Show("Se ha Formateado la unidad! Abra el explorador para usar el Disco", "Informacion", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                else
+                {
+                    MessageBox.Show("No se Puede Formatear la Unidad!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

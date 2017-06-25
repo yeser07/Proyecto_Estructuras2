@@ -25,6 +25,7 @@
         private System.Windows.Forms.ToolStripMenuItem CrearDiscoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AbrirDiscoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExploradorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem formatiarDiscoToolStripMenuItem;
     }
 }
 
