@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArbolIndex.cs" />
     <Compile Include="Class.cs" />
     <Compile Include="Explorador.cs">
       <SubType>Form</SubType>

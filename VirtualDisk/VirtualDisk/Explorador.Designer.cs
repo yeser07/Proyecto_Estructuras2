@@ -42,8 +42,8 @@
             this.Fecha_Hora = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folder = new System.Windows.Forms.Label();
-            this.BorrarCarpeta = new System.Windows.Forms.ToolStripButton();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.BorrarCarp = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -69,13 +69,13 @@
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NuevaCarpeta,
-            this.BorrarCarpeta,
+            this.BorrarCarp,
             this.Agregar,
             this.Extraer,
             this.Borrar});
             this.toolStrip1.Location = new System.Drawing.Point(210, 55);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(439, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(573, 25);
             this.toolStrip1.TabIndex = 7;
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
@@ -126,7 +126,7 @@
             this.viewGeneral.Location = new System.Drawing.Point(210, 83);
             this.viewGeneral.MultiSelect = false;
             this.viewGeneral.Name = "viewGeneral";
-            this.viewGeneral.Size = new System.Drawing.Size(462, 261);
+            this.viewGeneral.Size = new System.Drawing.Size(542, 261);
             this.viewGeneral.SmallImageList = this.imageList1;
             this.viewGeneral.TabIndex = 9;
             this.viewGeneral.UseCompatibleStateImageBehavior = false;
@@ -157,29 +157,26 @@
             this.folder.Size = new System.Drawing.Size(0, 13);
             this.folder.TabIndex = 10;
             // 
-            // BorrarCarpeta
-            // 
-            this.BorrarCarpeta.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.BorrarCarpeta.Image = ((System.Drawing.Image)(resources.GetObject("BorrarCarpeta.Image")));
-            this.BorrarCarpeta.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.BorrarCarpeta.Name = "BorrarCarpeta";
-            this.BorrarCarpeta.Size = new System.Drawing.Size(23, 22);
-            this.BorrarCarpeta.Text = "Borrar Carpeta";
-            this.BorrarCarpeta.ToolTipText = "Borrar Carpeta";
-            this.BorrarCarpeta.Visible = false;
-            this.BorrarCarpeta.Click += new System.EventHandler(this.BorrarCarpeta_Click_1);
-            // 
             // imageList1
             // 
             this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "Folder.png");
             // 
+            // BorrarCarp
+            // 
+            this.BorrarCarp.Image = ((System.Drawing.Image)(resources.GetObject("BorrarCarp.Image")));
+            this.BorrarCarp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.BorrarCarp.Name = "BorrarCarp";
+            this.BorrarCarp.Size = new System.Drawing.Size(103, 22);
+            this.BorrarCarp.Text = "Borrar Carpeta";
+            this.BorrarCarp.Click += new System.EventHandler(this.BorrarCarp_Click);
+            // 
             // Explorador
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(729, 416);
+            this.ClientSize = new System.Drawing.Size(797, 416);
             this.Controls.Add(this.folder);
             this.Controls.Add(this.viewGeneral);
             this.Controls.Add(this.toolStrip1);
@@ -210,7 +207,7 @@
         private System.Windows.Forms.ColumnHeader Fecha_Hora;
         private System.Windows.Forms.ColumnHeader Size;
         private System.Windows.Forms.Label folder;
-        private System.Windows.Forms.ToolStripButton BorrarCarpeta;
         private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ToolStripButton BorrarCarp;
     }
 }

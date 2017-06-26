@@ -213,6 +213,8 @@ namespace VirtualDisk
             SaveFileDialog dlgNuevoArchivo = new SaveFileDialog();
             dlgNuevoArchivo.RestoreDirectory = true;
             dlgNuevoArchivo.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            dlgNuevoArchivo.Filter = "HDD | *.bin";
+            dlgNuevoArchivo.DefaultExt = "bin";
 
             if (dlgNuevoArchivo.ShowDialog() == DialogResult.OK)
             {
@@ -292,9 +294,25 @@ namespace VirtualDisk
                         }
                     }
 
-                    Principal.Default = Path.GetFullPath(dlgNuevoArchivo.FileName);
+                    //Principal.Default = Path.GetFullPath(dlgNuevoArchivo.FileName);
 
-                    MessageBox.Show("Creado Con Exito! Abra el explorador para usar el Disco","Informacion",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    //MessageBox.Show("Creado Con Exito! Abra el explorador para usar el Disco","Informacion",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    Constants.discoDefault = Path.GetFullPath(dlgNuevoArchivo.FileName);
+
+                    string rutaIndex = Constants.discoDefault.Substring(0, Constants.discoDefault.Length - 4) + ".index";
+                    using (FileStream fi = new FileStream(rutaIndex, FileMode.CreateNew))
+                    {
+                        fi.Seek(0, SeekOrigin.Begin);
+                        fi.WriteByte(0);
+                    }
+
+                    Constants.discoIndice = rutaIndex;
+
+                    DialogResult dialogo = MessageBox.Show("Creado Con Exito! Desea Abrir el Explorador?" , "Abir Disco", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (dialogo == DialogResult.Yes)
+                    {
+                        loadExplorador();
+                    }
                 }
                 else
                 {
@@ -306,45 +324,101 @@ namespace VirtualDisk
         private void AbrirDiscoToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             OpenFileDialog dlgOpenFile = new OpenFileDialog();
+            dlgOpenFile.RestoreDirectory = true;
+            dlgOpenFile.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            dlgOpenFile.Filter = "HDD | *.bin";
+            dlgOpenFile.DefaultExt = "bin";
 
             if (dlgOpenFile.ShowDialog() == DialogResult.OK)
             {
                 if (File.Exists(dlgOpenFile.FileName))
                 {
-                    Default = Path.GetFullPath(dlgOpenFile.FileName);
+                    string rutaDisco = Path.GetFullPath(dlgOpenFile.FileName);
+                    string rutaIndice = rutaDisco.Substring(0, rutaDisco.Length - 4) + ".index";
+                    if (File.Exists(Path.Combine(rutaIndice)))
+                    {
+                        Constants.discoDefault = rutaDisco;
+                        Constants.discoIndice = rutaIndice;
+
+                        DialogResult dialogo = MessageBox.Show("Cargado Con Exito! Desea Abrir el Explorador?" , "Abir Disco", MessageBoxButtons.YesNo , MessageBoxIcon.Question);
+                        if (dialogo == DialogResult.Yes)
+                        {
+                            loadExplorador();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se puede Abrir el disco! no se encontro archivo de indice","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("No se puede Abrir el archivo!",
-                                    "Error",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
+                    MessageBox.Show("No se puede Abrir el archivo!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
                 }
-
             }
+
+            /* if (dlgOpenFile.ShowDialog() == DialogResult.OK)
+             {
+                 if (File.Exists(dlgOpenFile.FileName))
+                 {
+                     Default = Path.GetFullPath(dlgOpenFile.FileName);
+                 }
+                 else
+                 {
+                     MessageBox.Show("No se puede Abrir el archivo!",
+                                     "Error",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Error);
+                 }
+
+             }*/
         }
 
         private void ExploradorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Default != null)
+            /* if (Default != null)
+             {
+                 if (!Application.OpenForms.OfType<Explorador>().Any())
+                 {
+                     Explorador explorador = new Explorador();
+                     //explorador.MdiParent = this;
+                     explorador.WindowState = FormWindowState.Maximized;
+                     explorador.Show();
+                 }
+
+             }
+             else
+             {
+                 MessageBox.Show("Cargue un disco desde el menu Archivo->Abrir Disco",
+                                     "Error",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Error);
+             }*/
+            loadExplorador();
+
+
+        }
+
+        public void loadExplorador()
+        {
+            if (Constants.discoDefault != null)
             {
                 if (!Application.OpenForms.OfType<Explorador>().Any())
                 {
                     Explorador explorador = new Explorador();
-                    //explorador.MdiParent = this;
-                    explorador.WindowState = FormWindowState.Maximized;
+                  //  explorador.MdiParent = this;
+                   // explorador.WindowState = FormWindowState.Maximized;
                     explorador.Show();
                 }
-
             }
             else
             {
-                MessageBox.Show("Cargue un disco desde el menu Archivo->Abrir Disco",
-                                    "Error",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
+                MessageBox.Show("Cargue un disco desde el menu Archivo->Abrir Disco","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
         }
+
+
+
 
         private void Principal_Load_1(object sender, EventArgs e)
         {

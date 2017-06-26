@@ -130,6 +130,15 @@
         8V8Q5GywWqgLhGt/rSaY0JAVgPwMcjbIZpBmkKEkGUATxQD8/H5zVk7GdAAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="BorrarCarp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACkSURBVDhPY2AYcDBhwoTTkyZN+o8FHyDKcTg0gw2cPHmy
+        A0FD8BmAR+73xIkT/cGGk2nAf6ABDWADQAxyMNx7FLuAFAOALq0DqvcE4lJg7MmRFAZQzedhFgINWAb0
+        hgkpgQiyGZZeVgINnAXkPyTFgFKoATDNIMN+ggw4RUw4TJs2TRDkbKjNYJcA2WsIJjRkBSA/g5wNshmk
+        ube3V4gkA2iiGABZKZfbZ7okfwAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="Agregar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -199,15 +208,6 @@
         Af8BAAGkAqABAAOAAwAB/wIAAf8DAAL/AQAB/wMAAf8BAAH/AQAC/wIAA/8BAAH/AfMM8gHzAf8wAA+z
         AbQwABCzMAAQszAAELMwABCzMAAQszAAELMwABCzMAAQszAAELMwABCzMAAQszAAD7MBCTAAAfIGuwHz
         eAABQgFNAT4HAAE+AwABKAMAAUADAAEQAwABAQEAAQEFAAGAFwAD/3IAAf8GAAL/BgAL
-</value>
-  </data>
-  <data name="BorrarCarpeta.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACkSURBVDhPY2AYcDBhwoTTkyZN+o8FHyDKcTg0gw2cPHmy
-        A0FD8BmAR+73xIkT/cGGk2nAf6ABDWADQAxyMNx7FLuAFAOALq0DqvcE4lJg7MmRFAZQzedhFgINWAb0
-        hgkpgQiyGZZeVgINnAXkPyTFgFKoATDNIMN+ggw4RUw4TJs2TRDkbKjNYJcA2WsIJjRkBSA/g5wNshmk
-        ube3V4gkA2iiGABZKZfbZ7okfwAAAABJRU5ErkJggg==
 </value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

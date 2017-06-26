@@ -40,7 +40,7 @@ namespace VirtualDisk
 
         private void Explorador_Load_1(object sender, EventArgs e)
         {
-            if (Principal.Default == null)
+            /*if (Principal.Default == null)
             {
                 MessageBox.Show("Abra un disco o cree un nuevo desde el menu archivo",
                                    "Error", MessageBoxButtons.OK,MessageBoxIcon.Error);
@@ -55,15 +55,22 @@ namespace VirtualDisk
                 leerRootDirectory();
                 sizeCluster = tablaMBR.bytesxSec * tablaMBR.sectorxCluster;
                 cargarView(true);
-            }
+            }*/
 
+            Disco.Text = "Disco: " + Constants.discoDefault;
+            readHDDInformation();
+            leerTablasFat();
+            leerRootDirectory();
+            sizeCluster = tablaMBR.bytesxSec * tablaMBR.sectorxCluster;
+            cargarView(true);
         }
 
         public void readHDDInformation()
         {
            // DecodedMBR tablaMBR = new DecodedMBR();
             byte[] temporalArray;
-            using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            //  using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
             {
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
                 temporalArray = reader.ReadBytes(3);
@@ -134,7 +141,8 @@ namespace VirtualDisk
         public void leerRootDirectory()
         {
             listaRootDirectory.Clear();
-            using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            //using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
             {
                 reader.BaseStream.Position = (tablaMBR.reservedSectors * tablaMBR.bytesxSec) + mbrOffset;
 
@@ -166,7 +174,8 @@ namespace VirtualDisk
         {
             fat1List.Clear();
             fat2List.Clear();
-            using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
             {
                 reader.BaseStream.Position = mbrOffset;
                 iTablaFat1 = reader.BaseStream.Position;
@@ -360,7 +369,8 @@ namespace VirtualDisk
             long p = posicionByteCluster(cluster);
             rootDir folder = new rootDir();
             folder = leerEntradaDirectorio(p);
-            using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
             {
                 reader.BaseStream.Position = p + 64;
                 int limiteCluster = (sizeCluster - 64) / 2;
@@ -386,7 +396,8 @@ namespace VirtualDisk
             {
                 ushort clusterSubCarpeta = buscarClusterVacio();
                 newfolder.startingCluster = clusterSubCarpeta;
-                using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
                 {
                     stream.BaseStream.Position = posicionByteLibre;
                     stream.Write(newfolder.filename);
@@ -487,7 +498,8 @@ namespace VirtualDisk
             {
                 long posicionByte = posicionByteCluster(cluster);
                 newfolder.startingCluster = cluster;
-                using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
                 {
                     stream.BaseStream.Position = posicionByte;
 
@@ -548,7 +560,8 @@ namespace VirtualDisk
 
                 long posicionClusterArchivo = posicionByteCluster(clusterInicioArchivo);
 
-                using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
                 {
                     stream.BaseStream.Position = posicionByteLibre;
                     stream.Write(Archivo.filename);
@@ -569,7 +582,9 @@ namespace VirtualDisk
                 if (Archivo.fileSize < sizeCluster)
                 {
 
-                    using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                    // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+
+                    using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
                     {
                         stream.BaseStream.Position = posicionClusterArchivo;
                         stream.Write(archivo, 0, archivo.Length);
@@ -592,7 +607,8 @@ namespace VirtualDisk
                     for (int i = 0; i < cantidadClusters; i++)
                     {
                         posicionClusterArchivo = posicionByteCluster(clusterAsignado[i]);
-                        using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                        // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                        using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
                         {
                             stream.BaseStream.Position = posicionClusterArchivo;
                             int offset = 0;
@@ -718,7 +734,8 @@ namespace VirtualDisk
                 if (Archivo.fileSize < sizeCluster - 32)
                 {
                     Archivo.startingCluster = 0;
-                    using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                    //using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                    using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
                     {
                         stream.BaseStream.Position = posicionByteDirectoryEntry;
                         stream.Write(Archivo.filename);
@@ -746,7 +763,8 @@ namespace VirtualDisk
                     setmarcadorCluster(clusterDirectoryEntry, clustersAsignados[0]);
                     Archivo.startingCluster = clustersAsignados[0];
                     long posicionClusterArchivo = posicionByteCluster(clusterDirectoryEntry);
-                    using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                    // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                    using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
                     {
                         stream.BaseStream.Position = posicionByteDirectoryEntry;
                         stream.Write(Archivo.filename);
@@ -767,7 +785,8 @@ namespace VirtualDisk
                     for (int i = 0; i < clustersAsignados.Length; i++)
                     {
                         posicionClusterArchivo = posicionByteCluster(clustersAsignados[i]);
-                        using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                        // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+                        using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
                         {
                             stream.BaseStream.Position = posicionClusterArchivo;
                             int offset = 0;
@@ -798,7 +817,7 @@ namespace VirtualDisk
             }
             else
             {
-                MessageBox.Show("No se puede crear la carpeta!", "Informacion", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se puede Guardar el Archivo!", "Informacion", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return clusterDirectoryEntry;
         }
@@ -808,7 +827,8 @@ namespace VirtualDisk
         {
             rootDir result = new rootDir();
             result.father = new rootDir();
-            using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
             {
                 reader.BaseStream.Position = posicionBytes;
                 result.father.byteP = reader.BaseStream.Position;
@@ -899,7 +919,8 @@ namespace VirtualDisk
                 rootDir DirEntry = new rootDir();
                 DirEntry.father = new rootDir();
                 long posicionBytes = posicionByteCluster(c);
-                using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
                 {
                     reader.BaseStream.Position = posicionBytes;
                     DirEntry.father.byteP = reader.BaseStream.Position;
@@ -965,7 +986,8 @@ namespace VirtualDisk
             int limiteCluster = (sizeCluster - 64) / 2;
             long posicion = folderActual.byteP + 64;
 
-            using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            //  using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
             {
                 reader.BaseStream.Position = posicion;
 
@@ -980,7 +1002,8 @@ namespace VirtualDisk
                 }
             }
 
-            using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+            // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+            using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
             {
                 stream.BaseStream.Position = (posicion) + (entradaLibre * 2);
                 stream.Write(cluster);
@@ -994,7 +1017,8 @@ namespace VirtualDisk
             int limiteCluster = (sizeCluster - 64) / 2;
             long posicion = folderActual.byteP + 64;
 
-            using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
             {
                 reader.BaseStream.Position = posicion;
 
@@ -1009,16 +1033,20 @@ namespace VirtualDisk
                 }
             }
 
-            using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+            // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+
+            using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
             {
                 stream.BaseStream.Position = (posicion) + (posicionCluster * 2);
+                ushort vacio = new ushort();
                 stream.Write(0);
             }
         }
 
         void setmarcadorCluster(ushort numeroCluster, ushort marcador)
         {
-            using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+            //using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+            using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
             {
                 stream.BaseStream.Position = iTablaFat1 + (numeroCluster * 2);
                 stream.Write(marcador);
@@ -1453,7 +1481,8 @@ namespace VirtualDisk
         {
             rootDir result = new rootDir();
             result.father = new rootDir();
-            using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
             {
                 reader.BaseStream.Position = posicionBytes;
                 result.filename = reader.ReadBytes(8);
@@ -1483,7 +1512,9 @@ namespace VirtualDisk
             if (clusters.Length == 1)
             {
                 posicionInicioCluster = posicionByteCluster(archivo.startingCluster);
-                using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
+
                 {
                     reader.BaseStream.Position = posicionInicioCluster;
                     reader.Read(result, 0, (int)archivo.fileSize);
@@ -1494,7 +1525,8 @@ namespace VirtualDisk
                 for (int i = 0; i < clusters.Length; i++)
                 {
                     posicionInicioCluster = posicionByteCluster(clusters[i]);
-                    using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                    //using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                    using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
                     {
                         reader.BaseStream.Position = posicionInicioCluster;
                         int offset = 0;
@@ -1525,7 +1557,8 @@ namespace VirtualDisk
             if (archivo.fileSize < sizeCluster - 32)
             {
                 posicionInicioCluster = posicion + 32;
-                using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
                 {
                     reader.BaseStream.Position = posicionInicioCluster;
                     reader.Read(result, 0, (int)archivo.fileSize);
@@ -1536,7 +1569,8 @@ namespace VirtualDisk
                 if (clusters.Length == 1)
                 {
                     posicionInicioCluster = posicionByteCluster(archivo.startingCluster);
-                    using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                    // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                    using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
                     {
                         reader.BaseStream.Position = posicionInicioCluster;
                         reader.Read(result, 0, (int)archivo.fileSize);
@@ -1547,7 +1581,8 @@ namespace VirtualDisk
                     for (int i = 0; i < clusters.Length; i++)
                     {
                         posicionInicioCluster = posicionByteCluster(clusters[i]);
-                        using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                        // using (BinaryReader reader = new BinaryReader(new FileStream(Principal.Default, FileMode.Open)))
+                        using (BinaryReader reader = new BinaryReader(new FileStream(Constants.discoDefault, FileMode.Open)))
                         {
                             reader.BaseStream.Position = posicionInicioCluster;
                             int offset = 0;
@@ -1587,7 +1622,8 @@ namespace VirtualDisk
         {
             var file = listaRootDirectory.Where(x => x.startingCluster == cluster).FirstOrDefault();
             rootDir folder0 = new rootDir();
-            using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+            // using (BinaryWriter stream = new BinaryWriter(File.Open(Principal.Default, FileMode.Open)))
+            using (BinaryWriter stream = new BinaryWriter(File.Open(Constants.discoDefault, FileMode.Open)))
             {
                 stream.BaseStream.Position = file.byteP;
                 stream.Write(folder0.filename);
@@ -1718,6 +1754,11 @@ namespace VirtualDisk
                     cargarView(false);
                 }
             }
+        }
+
+        private void BorrarCarp_Click(object sender, EventArgs e)
+        {
+            //Falta generar esto
         }
     }
 }

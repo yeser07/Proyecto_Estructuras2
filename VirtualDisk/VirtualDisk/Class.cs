@@ -301,4 +301,12 @@ namespace VirtualDisk
             startingCluster = nCluster;
         }*/
     }
+
+    static class Constants
+    {
+        public const int ordenArbol = 4;
+        public static string discoDefault { get; set; }
+        public static string discoIndice { get; set; }
+    }
+
 }
